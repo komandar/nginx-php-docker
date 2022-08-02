@@ -1,5 +1,5 @@
 ARG PHP_VERSION=8.1
-FROM php:${PHP_VERSION}-fpm-alpine
+FROM php:8.1-fpm-alpine
 
 # PHP_CPPFLAGS are used by the docker-php-ext-* scripts
 ARG PHP_CPPFLAGS="$PHP_CPPFLAGS"
@@ -9,20 +9,20 @@ SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 # Install Nginx & PHP packages and extensions
 RUN apk add --no-cache --update \
     # Install packages required by PHP/Laravel
-    git~=2 \
-    icu-dev~=69 \
-    nginx~=1 \
-    unzip~=6 \
+    git \
+    icu-dev \
+    nginx \
+    unzip \
     # Install mail server
-    msmtp~=1 \
+    msmtp \
     # Install gd for image functions
-    freetype-dev~=2 \
-    libwebp-dev~=1 \
-    libjpeg-turbo-dev~=2 \
-    libpng-dev~=1 \
+    freetype-dev \
+    libwebp-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
     # Install zip for csv functions
-    libzip-dev~=1 \
-    zip~=3 \
+    libzip-dev \
+    zip \
     # Configure image library
     && docker-php-ext-configure gd \
     --with-jpeg \
