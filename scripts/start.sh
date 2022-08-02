@@ -1,7 +1,7 @@
 #!/bin/sh
 
 main() {
-    echo "Starting up nginx-php..."
+    echo "Start webserver..."
     nginx
     php-fpm
 }

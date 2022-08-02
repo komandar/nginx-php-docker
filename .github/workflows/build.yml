@@ -4,22 +4,25 @@ on: [push, pull_request]
 
 jobs:
   docker-lint:
-    timeout-minutes: 30
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
       -
-        name: Checkout Repository
+        name: Checkout
         uses: actions/checkout@v3
       -
         name: Hadolint Action
         uses: hadolint/hadolint-action@v2.1.0
+        with:
+          dockerfile: Dockerfile
+          failure-threshold: 'error'
 
   sh-checker:
-    timeout-minutes: 30
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
       -
-        name: Checkout Repository
+        name: Checkout
         uses: actions/checkout@v3
       -
         name: Run sh-checker
@@ -28,14 +31,14 @@ jobs:
           SHFMT_OPTS: -i 4 -d
 
   build:
-    timeout-minutes: 30
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     strategy:
       matrix:
         php_version: ["8.0", "8.1"]
     steps:
       -
-        name: Checkout Repository
+        name: Checkout
         uses: actions/checkout@v3
       -
         name: Build Docker image

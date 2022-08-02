@@ -3,11 +3,11 @@ name: release
 on:
   push:
     tags:
-      - "*"
+      - '*'
 
 jobs:
   release:
-    timeout-minutes: 30
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -29,5 +29,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build Docker image and push to Docker Hub
-        run: docker buildx build --push -t komandar/nginx-php:${{ matrix.php_version }}-${GITHUB_REF##*/} --build-arg PHP_VERSION=${{ matrix.php_version }} --platform linux/amd64,linux/arm/v7,linux/arm64 .
+        name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: komandar/nginx-php:${{ matrix.php_version }}-${GITHUB_REF##*/}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: PHP_VERSION=${{ matrix.php_version }}
