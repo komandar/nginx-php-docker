@@ -103,7 +103,7 @@ GitHub Actions will automatically build and push supported tags to Docker Hub on
 **Manual Builds**
 
 ```bash
-docker build -t komandar/nginx-php:8.1-7 --build-arg PHP_VERSION=8.1 .
+docker build -t komandar/nginx-php:8.1-1 --build-arg PHP_VERSION=8.1 .
 
-sudo docker push komandar/nginx-php:8.1-7
+sudo docker push komandar/nginx-php:8.1-1
 ```
