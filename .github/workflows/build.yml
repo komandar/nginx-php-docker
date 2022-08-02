@@ -1,0 +1,53 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  docker-lint:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout Repository
+        uses: actions/checkout@v3
+      -
+        name: Hadolint Action
+        uses: hadolint/hadolint-action@v2
+
+  sh-checker:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout Repository
+        uses: actions/checkout@v3
+      -
+        name: Run sh-checker
+        uses: luizm/action-sh-checker@master
+        env:
+          SHFMT_OPTS: -i 4 -d
+
+  build:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php_version: ["8.0", "8.1"]
+    steps:
+      -
+        name: Checkout Repository
+        uses: actions/checkout@v3
+      -
+        name: Build Docker image
+        run: docker build -t nginx-php:${{ matrix.php_version }} --build-arg PHP_VERSION=${{ matrix.php_version }} .
+      -
+        name: Run Docker image
+        run: docker run -d --name nginx-php -t nginx-php:${{ matrix.php_version }}
+      -
+        name: Test image is running
+        run: docker ps | grep -q nginx-php
+      -
+        name: Test nginx config inside container
+        run: |
+          sleep 10
+          docker exec -t nginx-php nginx -T
