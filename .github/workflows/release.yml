@@ -39,6 +39,6 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          tags: komandar/nginx-php:${GITHUB_REF##*/}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: komandar/nginx-php:${{ github.ref_name }}
+          build-args: |
+            REF_NAME=${{ github.ref_name }}
