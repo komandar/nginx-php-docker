@@ -87,7 +87,7 @@ nginx -T
 
 **Releasing**
 
-When releasing this project, cut a new GitHub tag/release that simply iterates the number (eg: v4, v5, v6...). We won't use semver here for simplicity when tagging images.
+When releasing this project, cut a new GitHub tag/release that includes the php version and iterates the release number (eg: 8.1-v4, 8.1-v5, 8.1-v6...). We won't use semver here for simplicity when tagging images.
 
 ### Building New Versions
 
