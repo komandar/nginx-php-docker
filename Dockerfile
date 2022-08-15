@@ -1,8 +1,6 @@
 ARG PHP_VERSION=8.1
-FROM php:8.1-fpm-alpine
-
-# PHP_CPPFLAGS are used by the docker-php-ext-* scripts
-ARG PHP_CPPFLAGS="$PHP_CPPFLAGS"
+ARG REDIS_VERSION=5.3.7
+FROM php:$PHP_VERSION-fpm-alpine
 
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 
@@ -13,34 +11,30 @@ RUN apk add --no-cache --update \
     icu-dev \
     nginx \
     unzip \
-    # Install mail server
+    # Install local mail server
     msmtp \
-    # Install gd for image functions
+    # Install gd for image transformations
     freetype-dev \
-    libwebp-dev \
     libjpeg-turbo-dev \
     libpng-dev \
-    # Install zip for csv functions
+    libwebp-dev \
+    # Install zip function
     libzip-dev \
     zip \
-    # Install postgresql packages
+    # Install postgresql package
     postgresql-dev \
-    # Install phpredis
-    pcre-dev ${PHPIZE_DEPS} \
-    && pecl install redis \
-    && apk del pcre-dev ${PHPIZE_DEPS} \
     # Configure image library
     && docker-php-ext-configure gd \
+    --with-freetype \
     --with-jpeg \
     --with-webp \
-    --with-freetype \
     # Configure PHP extensions for use in Docker
     && docker-php-ext-install \
     gd \
-    redis \
     opcache \
     pdo_mysql \
     pdo_pgsql \
+    redis \
     zip \
     # Setup Nginx directories, permissions, and one-off configurations
     && mkdir -p /var/run/nginx \
@@ -53,10 +47,17 @@ RUN apk add --no-cache --update \
     # Cleanup
     && rm -rf /var/cache/apk/* /tmp/*
 
-COPY /config/nginx.conf /etc/nginx/http.d/default.conf
-COPY /config/php-opcache.ini /usr/local/etc/php/conf.d/php-opcache-cfg.ini
-COPY /config/php-general.ini /usr/local/etc/php/conf.d/php-general-cfg.ini
+# Install phpredis from source
+RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$REDIS_VERSION.tar.gz \
+    && tar xfz /tmp/redis.tar.gz \
+    && rm -r /tmp/redis.tar.gz \
+    && mkdir -p /usr/src/php/ext \
+    && mv phpredis-* /usr/src/php/ext/redis
+
 COPY /config/msmtprc /etc/msmtprc
+COPY /config/nginx.conf /etc/nginx/http.d/default.conf
+COPY /config/php-general.ini /usr/local/etc/php/conf.d/php-general-cfg.ini
+COPY /config/php-opcache.ini /usr/local/etc/php/conf.d/php-opcache-cfg.ini
 COPY /scripts/start.sh /etc/start.sh
 COPY --chown=www-data:www-data src/ /var/www/html/public
 
