@@ -1,8 +1,11 @@
-ARG PHP_VERSION=8.1
-ARG REDIS_VERSION=5.3.7
-FROM php:$PHP_VERSION-fpm-alpine
+FROM php:8.1-fpm-alpine
 
-SHELL ["/bin/ash", "-o", "pipefail", "-c"]
+# Install phpredis from source
+RUN wget -O /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/5.3.7.tar.gz \
+    && tar xfz /tmp/redis.tar.gz \
+    && rm -r /tmp/redis.tar.gz \
+    && mkdir -p /usr/src/php/ext \
+    && mv phpredis-* /usr/src/php/ext/redis
 
 # Install Nginx & PHP packages and extensions
 RUN apk add --no-cache --update \
@@ -29,7 +32,7 @@ RUN apk add --no-cache --update \
     --with-jpeg \
     --with-webp \
     # Configure PHP extensions for use in Docker
-    && docker-php-ext-install \
+    && docker-php-ext-install -j$(nproc) \
     gd \
     opcache \
     pdo_mysql \
@@ -46,13 +49,6 @@ RUN apk add --no-cache --update \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     # Cleanup
     && rm -rf /var/cache/apk/* /tmp/*
-
-# Install phpredis from source
-RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$REDIS_VERSION.tar.gz \
-    && tar xfz /tmp/redis.tar.gz \
-    && rm -r /tmp/redis.tar.gz \
-    && mkdir -p /usr/src/php/ext \
-    && mv phpredis-* /usr/src/php/ext/redis
 
 COPY /config/msmtprc /etc/msmtprc
 COPY /config/nginx.conf /etc/nginx/http.d/default.conf
