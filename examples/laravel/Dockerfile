@@ -1,4 +1,4 @@
-FROM komandar/nginx-php:8.1-1
+FROM komandar/nginx-php:8.1-v1
 
 COPY --chown=www-data:www-data ./src /var/www/html
 

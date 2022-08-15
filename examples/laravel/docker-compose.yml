@@ -1,4 +1,4 @@
 services:
-  my-project:
+  projectname:
     volumes:
       - ./src/storage:/var/www/html/storage

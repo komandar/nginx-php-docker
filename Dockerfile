@@ -23,6 +23,12 @@ RUN apk add --no-cache --update \
     # Install zip for csv functions
     libzip-dev \
     zip \
+    # Install postgresql packages
+    postgresql-dev \
+    # Install phpredis
+    pcre-dev ${PHPIZE_DEPS} \
+    && pecl install redis \
+    && apk del pcre-dev ${PHPIZE_DEPS} \
     # Configure image library
     && docker-php-ext-configure gd \
     --with-jpeg \
@@ -30,10 +36,12 @@ RUN apk add --no-cache --update \
     --with-freetype \
     # Configure PHP extensions for use in Docker
     && docker-php-ext-install \
-    pdo_mysql \
-    opcache \
-    zip \
     gd \
+    redis \
+    opcache \
+    pdo_mysql \
+    pdo_pgsql \
+    zip \
     # Setup Nginx directories, permissions, and one-off configurations
     && mkdir -p /var/run/nginx \
     && chown -R www-data:www-data /var/run/nginx /var/lib/nginx /var/log/nginx \
@@ -46,7 +54,8 @@ RUN apk add --no-cache --update \
     && rm -rf /var/cache/apk/* /tmp/*
 
 COPY /config/nginx.conf /etc/nginx/http.d/default.conf
-COPY /config/opcache.ini /usr/local/etc/php/conf.d/php-opocache-cfg.ini
+COPY /config/php-opcache.ini /usr/local/etc/php/conf.d/php-opcache-cfg.ini
+COPY /config/php-general.ini /usr/local/etc/php/conf.d/php-general-cfg.ini
 COPY /config/msmtprc /etc/msmtprc
 COPY /scripts/start.sh /etc/start.sh
 COPY --chown=www-data:www-data src/ /var/www/html/public
