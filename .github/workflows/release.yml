@@ -35,7 +35,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          tags: komandar/nginx-php:${{ matrix.php_version }}-${GITHUB_REF##*/}
+          tags: komandar/nginx-php:${GITHUB_REF_NAME}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: PHP_VERSION=${{ matrix.php_version }}
