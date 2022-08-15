@@ -49,7 +49,7 @@ RUN apk add --no-cache --update \
     && sed -i 's|user =|;user =|' /usr/local/etc/php-fpm.d/www.conf \
     && sed -i 's|group =|;group =|' /usr/local/etc/php-fpm.d/www.conf \
     # Install the latest version of Composer
-    && wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/usr/local/bin --filename=composer \
+    && wget -O - https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     # Cleanup
     && rm -rf /var/cache/apk/* /tmp/*
 
