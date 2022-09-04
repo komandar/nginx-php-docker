@@ -1,6 +1,9 @@
 services:
   nginx-php:
     container_name: "nginx-php"
-    build: .
+    build:
+      context: .
+      args:
+        PHP_VERSION: 8.1
     ports:
-      - "8888:80"
+      - "8080:80"

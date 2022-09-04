@@ -2,8 +2,10 @@ name: release
 
 on:
   workflow_dispatch:
-  release:
-    types: [published]
+  push:
+    branches-ignore:
+      - dev
+      - main
 
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
@@ -13,6 +15,9 @@ jobs:
   release:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php_version: ['8.1']
     steps:
       -
         name: Checkout
@@ -40,7 +45,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: .
+          context: Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
@@ -50,3 +55,4 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             REF_NAME=${{ github.ref_name }}
+            PHP_VERSION=${{ matrix.php_version }}

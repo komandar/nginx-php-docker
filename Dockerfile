@@ -1,5 +1,6 @@
 ARG PHP_VERSION=8.1
-FROM php:8.1-fpm-alpine
+
+FROM php:${PHP_VERSION}-fpm-alpine
 
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 
@@ -42,6 +43,10 @@ RUN apk add --no-cache --update \
     pdo_pgsql \
     redis \
     zip \
+    # Setup PHP directories, permissions
+    && mkdir -p /var/log/php \
+    && mkdir -p /var/run/php \
+    && chown -R www-data:www-data /var/log/php /var/run/php \
     # Setup Nginx directories, permissions, and one-off configurations
     && mkdir -p /var/run/nginx \
     && chown -R www-data:www-data /var/run/nginx /var/lib/nginx /var/log/nginx \
@@ -53,16 +58,22 @@ RUN apk add --no-cache --update \
     # Cleanup
     && rm -rf /var/cache/apk/* /tmp/*
 
-COPY /config/msmtprc /etc/msmtprc
-COPY /config/nginx.conf /etc/nginx/http.d/default.conf
-COPY /config/php-general.ini /usr/local/etc/php/conf.d/php-general-cfg.ini
-COPY /config/php-opcache.ini /usr/local/etc/php/conf.d/php-opcache-cfg.ini
+# Copy preconfigured files
+COPY /config/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY /config/nginx/nginx.vhost.conf /etc/nginx/http.d/default.conf
+
+COPY /config/php/php-fpm.conf /usr/local/etc/php-fpm.conf
+COPY /config/php/php-fpm-www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY /config/php/php-fpm-zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+COPY /config/php/php-general.ini /usr/local/etc/php/conf.d/php-general-cfg.ini
+COPY /config/php/php-opcache.ini /usr/local/etc/php/conf.d/php-opcache-cfg.ini
+
 COPY /scripts/start.sh /etc/start.sh
-COPY --chown=www-data:www-data src/ /var/www/html/public
+COPY --chown=www-data:www-data src/ /var/www/app
 
-WORKDIR /var/www/html
+WORKDIR /var/www/app
 
-EXPOSE 80 443
+EXPOSE 80
 
 USER www-data:www-data
 

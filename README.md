@@ -46,11 +46,11 @@ image: komandar/nginx-php:latest
 
 **Vanilla PHP and HTML**
 
-Place your `PHP` or `HTML` site files into `/var/www/html/public` inside the container to get started with this image. This can be achieved by using a volume in a `docker-compose` file or by copying them over in a `Dockerfile`. If you are using HTML instead of PHP, ensure you remove the `index.php` file so that your `index.html` file can take priority.
+Place your `PHP` or `HTML` site files into `/var/www/app/public` inside the container to get started with this image. This can be achieved by using a volume in a `docker-compose` file or by copying them over in a `Dockerfile`. If you are using HTML instead of PHP, ensure you remove the `index.php` file so that your `index.html` file can take priority.
 
 **Laravel**
 
-Place the root of your laravel project in `/var/www/html` so that the `public` folder of laravel lines up with the directory served by this nginx image (see `examples/laravel` for more details).
+Place the root of your laravel project in `/var/www/app` so that the `public` folder of laravel lines up with the directory served by this nginx image (see `examples/laravel` for more details).
 
 Want to give this image a spin? Simply run the following:
 
@@ -68,9 +68,10 @@ Tags for this image follow the syntax of `PHP_VERSION-IMAGE_VERSION`; for instan
 
 - `8.1` - uses the latest release on the PHP 8.1 Alpine track.
 
-**Image Versions (see CHANGELOG for more details)**
+**Image Type**
 
-- `v1`
+- `dev` - uses extra configuration for development environments
+- `prod` - strict prod settings enabled (includes opcache and jit)
 
 **Standalone Tags**
 
