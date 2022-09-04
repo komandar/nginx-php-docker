@@ -49,7 +49,7 @@ RUN apk add --no-cache --update \
     && chown -R www-data:www-data /var/log/php /var/run/php \
     # Setup Nginx directories, permissions, and one-off configurations
     && mkdir -p /var/run/nginx \
-    && chown -R www-data:www-data /var/run/nginx /var/lib/nginx /var/log/nginx \
+    && chown -R www-data:www-data /var/run/nginx /var/lib/nginx /var/log/nginx /etc/nginx/http.d \
     && sed -i 's|user nginx;|#user www-data;|' /etc/nginx/nginx.conf \
     && sed -i 's|user =|;user =|' /usr/local/etc/php-fpm.d/www.conf \
     && sed -i 's|group =|;group =|' /usr/local/etc/php-fpm.d/www.conf \
