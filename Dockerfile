@@ -1,4 +1,5 @@
 ARG PHP_VERSION=8.1
+ARG PHP_CPPFLAGS="$PHP_CPPFLAGS"
 
 FROM php:${PHP_VERSION}-fpm-alpine
 
@@ -62,8 +63,6 @@ RUN apk add --no-cache --update \
 COPY /config/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY /config/nginx/nginx.vhost.conf /etc/nginx/http.d/default.conf
 
-COPY /config/php/php-fpm.conf /usr/local/etc/php-fpm.conf
-COPY /config/php/php-fpm-www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY /config/php/php-fpm-zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY /config/php/php-general.ini /usr/local/etc/php/conf.d/php-general-cfg.ini
 COPY /config/php/php-opcache.ini /usr/local/etc/php/conf.d/php-opcache-cfg.ini
@@ -73,7 +72,7 @@ COPY --chown=www-data:www-data src/ /var/www/app
 
 WORKDIR /var/www/app
 
-EXPOSE 80
+EXPOSE 80 443
 
 USER www-data:www-data
 
