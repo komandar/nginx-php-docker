@@ -17,10 +17,9 @@ The following features work out of the box without any configuration:
 
 - `Nginx` serves as the web host and reverse proxy
 - `PHP-FPM/OPcache` for fast performance in the browser and on the CLI
-- `msmtp` is installed and configured (see `config/msmtprc`) to send mail locally for testing via apps like `Mailcatcher` which will work out of the box (if Mailcatcher container is titled `mailcatcher`)
 - `composer` is installed and ready to use to setup all your dependencies
 - `mysql_pdo` is installed as the driver for MariaDB/Mysql connections
-- `pgsql_pdo` is installed as the driver for Postgresql connections
+- `pgsql_pdo` is installed as the driver for PostgreSQL connections
 - `gd` is installed for image processing
 - `zip` is installed for items that may need that
 
@@ -29,8 +28,8 @@ The following features work out of the box without any configuration:
 This image offers platform support for the following architectures:
 
 - linux/amd64
-- linux/arm/v7
 - linux/arm64
+- linux/arm/v7
 
 ## Install
 
@@ -62,20 +61,15 @@ Once the container spins up, navigate to `http://localhost:8888` in a browser.
 
 ## Docker Tags
 
-Tags for this image follow the syntax of `PHP_VERSION-IMAGE_VERSION`; for instance, a valid tag would be `8.1-v1` signifying to use PHP v8.1 and the first version of this image (nginx config, Dockerfile, etc).
+Tags for this image follow the syntax of `PHP_VERSION[:IMAGE_TYPE]`; for instance, a valid tag would be `8.1` signifying to use PHP v8.1 of this image.
 
 **PHP Versions**
 
 - `8.1` - uses the latest release on the PHP 8.1 Alpine track.
 
-**Image Type**
-
-- `dev` - uses extra configuration for development environments
-- `prod` - strict prod settings enabled (includes opcache and jit)
-
 **Standalone Tags**
 
-- `latest` - uses the latest release of this image with all defaults.
+- `latest` - uses the latest release of this image.
 
 ## Development
 
@@ -88,7 +82,7 @@ nginx -T
 
 **Releasing**
 
-When releasing this project, cut a new GitHub tag/release that includes the php version and iterates the release number (eg: 8.1-v4, 8.1-v5, 8.1-v6...). We won't use semver here for simplicity when tagging images.
+When releasing this project, push to the branch related to the php version.
 
 ### Building New Versions
 
@@ -101,7 +95,6 @@ GitHub Actions will automatically build and push supported tags to Docker Hub on
 **Manual Builds**
 
 ```bash
-docker build -t komandar/nginx-php:8.1-v1 --build-arg PHP_VERSION=8.1 .
-
-sudo docker push komandar/nginx-php:8.1-v1
+docker build -t komandar/nginx-php:8.1 --build-arg PHP_VERSION=8.1 .
+docker push komandar/nginx-php:8.1
 ```
