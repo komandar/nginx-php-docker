@@ -6,4 +6,4 @@ services:
       args:
         PHP_VERSION: 8.1
     ports:
-      - "8080:80"
+      - "8888:80"
