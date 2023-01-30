@@ -6,7 +6,7 @@ on:
   push:
 
 concurrency:
-  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  group: "${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}"
   cancel-in-progress: true
 
 jobs:
@@ -14,25 +14,26 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v3
+<<<<<<< Updated upstream
       -
         name: Hadolint Action
+=======
+      - name: Hadolint Action
+>>>>>>> Stashed changes
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: Dockerfile
-          failure-threshold: 'error'
+          failure-threshold: "error"
 
   sh-checker:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v3
-      -
-        name: Run sh-checker
+      - name: Run sh-checker
         uses: luizm/action-sh-checker@master
         env:
           SHFMT_OPTS: -i 4 -d
@@ -42,22 +43,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php_version: ['8.1']
+        php_version: ["8.1"]
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v3
-      -
-        name: Build Docker image
+      - name: Build Docker image
         run: docker build -t nginx-php:${{ matrix.php_version }} --build-arg PHP_VERSION=${{ matrix.php_version }} .
-      -
-        name: Run Docker image
+      - name: Run Docker image
         run: docker run -d --name nginx-php -t nginx-php:${{ matrix.php_version }}
-      -
-        name: Test image is running
+      - name: Test image is running
         run: docker ps | grep -q nginx-php
-      -
-        name: Test nginx config inside container
+      - name: Test nginx config inside container
         run: |
           sleep 10
           docker exec -t nginx-php nginx -T

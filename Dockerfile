@@ -1,4 +1,4 @@
-ARG PHP_VERSION=8.1
+ARG PHP_VERSION=8.2
 ARG PHP_CPPFLAGS="$PHP_CPPFLAGS"
 
 FROM php:${PHP_VERSION}-fpm-alpine
@@ -24,8 +24,6 @@ RUN apk add --no-cache --update \
     libjpeg-turbo-dev \
     libpng-dev \
     libwebp-dev \
-    # Install local mail server
-    msmtp \
     # Install postgresql package
     postgresql-dev \
     # Install zip function
